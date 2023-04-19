@@ -1,0 +1,23 @@
+{
+  "name": "alps-drive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AB",
+  "license": "ISC",
+  "dependencies": {
+    "@coreui/vue": "^4.8.1",
+    "axios": "^1.3.5",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22",
+    "volta": "^0.0.0"
+  },
+  "volta": {
+    "node": "18.13.0",
+    "npm": "8.19.3"
+  }
+}
