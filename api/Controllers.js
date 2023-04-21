@@ -95,3 +95,32 @@ exports.delContent = (req, res) => {
         : res.status(200).send()
 
 }
+
+
+/**
+ * Deal with PUT requests. Create a folder if not exists yet.
+ *
+ * @param req
+ * @param res
+ */
+exports.newFile = (req, res) => {
+    let newFolderName = req.query['name']
+    let path = req.path.replace(process.env["API_BASE_URL"], '/').replace('//','/')
+
+    console.log(path)
+    console.log(req)
+
+/*    if (acceptable(newFolderName)) {
+        try {
+            console.log("Nouveau dossier :",storageFolder+path+newFolderName )
+            fs.mkdirSync(storageFolder+path+newFolderName)
+            res.status(201).json()
+        } catch (e) {
+            res.status(500)
+        }
+
+    } else {
+        res.status(400).json({message: "Le nom du dossier contient des caractères non autorisés" })
+    }*/
+
+}

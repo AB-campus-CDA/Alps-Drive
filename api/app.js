@@ -46,6 +46,9 @@ app.post(`${process.env.API_BASE_URL}*`, (req, res) => {
 app.delete(`${process.env.API_BASE_URL}*`, (req, res) => {
     Controller.delContent(req, res)
 })
+app.put(`${process.env.API_BASE_URL}*`, (req, res) => {
+    Controller.newFile(req, res)
+})
 
 
 // finally serve frontend
