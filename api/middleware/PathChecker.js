@@ -12,7 +12,7 @@ const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
  */
 exports.check = (req, res, next) => {
     let path = req.baseUrl.replace(process.env["API_BASE_URL"], '/').replace('//','/')
-    let error = {onFileRead: null, onFolderRead: null}
+    let errors = {onFileRead: null, onFolderRead: null}
 
     // debug log
     if (true) {
@@ -28,31 +28,31 @@ exports.check = (req, res, next) => {
     try {
         readFileSync(storageFolder+path, {encoding: 'utf8'})
     } catch (e) {
-        error.onFileRead = e
+        errors.onFileRead = e
     }
 
     // test if is an existing folder
     try {
         readdirSync(storageFolder.concat(path,'/').replace('//','/'), {encoding: 'utf8'})
     } catch (e) {
-        error.onFolderRead = e
+        errors.onFolderRead = e
     }
 
 
 
-    if ((error.onFileRead && error.onFolderRead) && req.method !== 'POST') {
+    if ((errors.onFileRead && errors.onFolderRead) && req.method !== 'POST') {
         res.status(404).json({
             message: "Ressource introuvable",
             target:storageFolder.concat(path,'(/)'),
-            error
+            errors
         })
     }
 
-    if (error.onFolderRead && res.method === 'POST') {
+    if (errors.onFolderRead && res.method === 'POST') {
         res.status(404).json({
             message: "Dossier introuvable",
             target: storageFolder.concat(path,'/').replace('//','/'),
-            error
+            errors
         })
     }
 

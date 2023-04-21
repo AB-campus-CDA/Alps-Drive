@@ -29,12 +29,7 @@ app.use(express.json({limit: "100kb", strict: false}));
 app.use(express.urlencoded({parameterLimit:2, extended: false}))
 
 
-app.get('/', (req, res, next) =>{
-    console.log("Incoming request !!!")
-    next();
-})
-
-
+// early catch 404 errors
 app.use(process.env.API_BASE_URL.concat('/*+'), (req, res, next)=>{
     PathChecker.check(req, res, next)
     next()
@@ -47,6 +42,9 @@ app.get(`${process.env.API_BASE_URL}*`, (req, res) => {
 })
 app.post(`${process.env.API_BASE_URL}*`, (req, res) => {
     Controller.newFolder(req, res)
+})
+app.delete(`${process.env.API_BASE_URL}*`, (req, res) => {
+    Controller.delContent(req, res)
 })
 
 

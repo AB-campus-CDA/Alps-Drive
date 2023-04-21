@@ -12,8 +12,9 @@ const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
  * @param res
  */
 exports.getContent = (req, res) => {
-    //console.log("req.url",req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/'))
+
     let path = req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/')
+    //console.log("req.url",path)
 
     if (path[path.length-1]==='/') {
 
@@ -39,6 +40,8 @@ exports.getContent = (req, res) => {
 /**
  * Deal with POST requests. Create a folder if not exists yet.
  *
+ * @param req
+ * @param res
  */
 exports.newFolder = (req, res) => {
     let newFolderName = req.query['name']
@@ -46,7 +49,7 @@ exports.newFolder = (req, res) => {
 
     if (acceptable(newFolderName)) {
         try {
-            console.log("create new folder",storageFolder+path+newFolderName )
+            console.log("Nouveau dossier :",storageFolder+path+newFolderName )
             fs.mkdirSync(storageFolder+path+newFolderName)
             res.status(201).json()
         } catch (e) {
@@ -56,5 +59,39 @@ exports.newFolder = (req, res) => {
     } else {
         res.status(400).json({message: "Le nom du dossier contient des caractères non autorisés" })
     }
+
+}
+
+
+/**
+ * Deal with DELETE requests. Remove the ressource (file or folder) given by the path.
+ *
+ * @param req
+ * @param res
+ */
+exports.delContent = (req, res) => {
+    let path = req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/')
+    let errors = {onFileDelete: null, onFolderDelete: null}
+
+    console.log("Suppression de", path)
+
+    // try remove as a file
+    try {
+        fs.rmSync(storageFolder+path, {force: true})
+    } catch(e) {
+        errors.onFileDelete = e
+    }
+
+    // try remove as a folder
+    try {
+        fs.rmSync(storageFolder+path+'/', {force: true, recursive: true})
+    } catch (e) {
+        errors.onFolderDelete = e
+    }
+
+    // ALWAYS at list 1 error ! actual error is when both rm failed
+    errors.onFileDelete && errors.onFolderDelete
+        ? res.status(500).json({errors})
+        : res.status(200).send()
 
 }
