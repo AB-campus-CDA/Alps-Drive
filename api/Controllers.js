@@ -107,5 +107,7 @@ exports.delContent = (req, res) => {
  * @param res
  */
 exports.newFile = (req, res) => {
-        res.status(201).send()
+    req.file
+        ? res.status(201).send()
+        : res.status(400).json({message: "File is missing"})
 }
