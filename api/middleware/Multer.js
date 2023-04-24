@@ -1,20 +1,23 @@
 const multer = require('multer');
+const os = require('node:os')
+const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
 
-/*const MIME_TYPES = {
-    'image/jpg': 'jpg',
-    'image/jpeg': 'jpg',
-    'image/png': 'png'
-};*/
+
 
 const storage = multer.diskStorage({
+
     destination: (req, file, callback) => {
-        callback(null, 'dossier de stockage');
+
+        let path = req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/')
+
+        callback(null, storageFolder+path);
     },
+
     filename: (req, file, callback) => {
         const name = file.originalname.split(' ').join('_');
-        const extension = MIME_TYPES[file.mimetype];
-        callback(null, name + Date.now() + '.' + extension);
+        callback(null, name);
     }
+
 });
 
 module.exports = multer({storage: storage})//.single('image');

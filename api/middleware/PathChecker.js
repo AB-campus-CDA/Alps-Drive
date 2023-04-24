@@ -19,7 +19,10 @@ exports.check = (req, res, next) => {
         console.log("-------------------------------------------------")
         console.log(req.method)
         console.log('path:', path)
-        console.log('name:', req.query['name']) // used by POST
+/*        console.log('req path:', req.path)
+        console.log('url:', req.url)
+        console.log('baseUrl:', req.baseUrl)*/
+        //console.log('name:', req.query['name']) // used by POST
         console.log("-------------------------------------------------")
     }
 
@@ -39,15 +42,27 @@ exports.check = (req, res, next) => {
     }
 
 
+    // FILE OVERRIDE CONFLICT
+    if (req.method === 'PUT' && errors.onFileRead === null) {
+        console.error("FILE OVERRIDE")
+        res.status(400).json({
+            message: "File already exists",
+            target: storageFolder+path
+        })
+    }
 
+
+    // MISSING FOLDER/FILE
     if ((errors.onFileRead && errors.onFolderRead) && req.method !== 'POST') {
         res.status(404).json({
             message: "Ressource introuvable",
-            target:storageFolder.concat(path,'(/)'),
+            target: storageFolder.concat(path,'(/)'),
             errors
         })
     }
 
+
+    // MISSING FOLDER
     if (errors.onFolderRead && res.method === 'POST') {
         res.status(404).json({
             message: "Dossier introuvable",

@@ -3,12 +3,15 @@ const app = express()
 const dotenv = require('dotenv');
 dotenv.config({ path: '.env'});
 const {init} = require('./init')
+const os = require('node:os')
+const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
 
 // middlewares :
 const PathChecker = require('./middleware/PathChecker')
 
 // controllers :
 const Controller = require('./Controllers')
+const upload = require('./middleware/Multer');
 
 
 
@@ -35,20 +38,28 @@ app.use(process.env.API_BASE_URL.concat('/*+'), (req, res, next)=>{
     next()
 })
 
+// multer
+
+
 
 // routes :
-app.get(`${process.env.API_BASE_URL}*`, (req, res) => {
+app.get(`${process.env.API_BASE_URL}*`,
+    (req, res) => {
     Controller.getContent(req, res)
 })
-app.post(`${process.env.API_BASE_URL}*`, (req, res) => {
+app.post(`${process.env.API_BASE_URL}*`,
+    (req, res) => {
     Controller.newFolder(req, res)
 })
-app.delete(`${process.env.API_BASE_URL}*`, (req, res) => {
+app.delete(`${process.env.API_BASE_URL}*`,
+    (req, res) => {
     Controller.delContent(req, res)
 })
-app.put(`${process.env.API_BASE_URL}*`, (req, res) => {
-    Controller.newFile(req, res)
-})
+app.put(`${process.env.API_BASE_URL}/*`,
+    upload .single('file'),
+    (req, res) => {
+    Controller.newFile(req, res)}
+)
 
 
 // finally serve frontend

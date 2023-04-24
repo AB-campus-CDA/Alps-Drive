@@ -2,6 +2,9 @@ const os = require("os");
 const fs = require("fs");
 const {acceptable} = require("./utils/ntui");
 const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
+const fileManager = require('./middleware/Multer')
+
+const multer = require('multer')
 
 
 /**
@@ -98,29 +101,11 @@ exports.delContent = (req, res) => {
 
 
 /**
- * Deal with PUT requests. Create a folder if not exists yet.
+ * Deal with PUT requests. Create a file with incoming multipart/form-data.
  *
  * @param req
  * @param res
  */
 exports.newFile = (req, res) => {
-    let newFolderName = req.query['name']
-    let path = req.path.replace(process.env["API_BASE_URL"], '/').replace('//','/')
-
-    console.log(path)
-    console.log(req)
-
-/*    if (acceptable(newFolderName)) {
-        try {
-            console.log("Nouveau dossier :",storageFolder+path+newFolderName )
-            fs.mkdirSync(storageFolder+path+newFolderName)
-            res.status(201).json()
-        } catch (e) {
-            res.status(500)
-        }
-
-    } else {
-        res.status(400).json({message: "Le nom du dossier contient des caractères non autorisés" })
-    }*/
-
+        res.status(201).send()
 }
