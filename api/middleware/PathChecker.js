@@ -10,21 +10,9 @@ const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
  * @param req
  * @param res
  */
-exports.check = (req, res, next) => {
+exports.check = (req, res) => {
     let path = req.baseUrl.replace(process.env["API_BASE_URL"], '/').replace('//','/')
     let errors = {onFileRead: null, onFolderRead: null}
-
-    // debug log
-    if (true) {
-        console.log("-------------------------------------------------")
-        console.log(req.method)
-        console.log('path:', path)
-/*        console.log('req path:', req.path)
-        console.log('url:', req.url)
-        console.log('baseUrl:', req.baseUrl)*/
-        //console.log('name:', req.query['name']) // used by POST
-        console.log("-------------------------------------------------")
-    }
 
 
     // test if is an existing file

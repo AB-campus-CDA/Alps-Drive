@@ -3,15 +3,15 @@ const app = express()
 const dotenv = require('dotenv');
 dotenv.config({ path: '.env'});
 const {init} = require('./init')
-const os = require('node:os')
-const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
+
 
 // middlewares :
 const PathChecker = require('./middleware/PathChecker')
+const FileManager = require('./middleware/FileManager');
+
 
 // controllers :
 const Controller = require('./Controllers')
-const upload = require('./middleware/Multer');
 
 
 
@@ -38,8 +38,6 @@ app.use(process.env.API_BASE_URL.concat('/*+'), (req, res, next)=>{
     next()
 })
 
-// multer
-
 
 
 // routes :
@@ -56,7 +54,7 @@ app.delete(`${process.env.API_BASE_URL}*`,
     Controller.delContent(req, res)
 })
 app.put(`${process.env.API_BASE_URL}/*`,
-    upload .single('file'),
+    FileManager.single('file'),
     (req, res) => {
     Controller.newFile(req, res)}
 )

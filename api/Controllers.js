@@ -2,9 +2,6 @@ const os = require("os");
 const fs = require("fs");
 const {acceptable} = require("./utils/ntui");
 const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
-const fileManager = require('./middleware/Multer')
-
-const multer = require('multer')
 
 
 /**
