@@ -8,6 +8,7 @@ const {init} = require('./init')
 // middlewares :
 const PathChecker = require('./middleware/PathChecker')
 const FileManager = require('./middleware/FileManager');
+const Logger = require('./middleware/Logger')
 
 
 // controllers :
@@ -24,19 +25,24 @@ app.use((req, res, next) => {
 });
 
 
-// limit body size to 100kb and JSON.parse compatible
-app.use(express.json({limit: "100kb", strict: false}));
+app.use(
+    // limit body size to 100kb and JSON.parse compatible
+    express.json({limit: "100kb", strict: false}),
 
+    // limit number of query params and to NOT nested queries
+    express.urlencoded({parameterLimit:2, extended: false}),
 
-// limit number of query params and to NOT nested queries
-app.use(express.urlencoded({parameterLimit:2, extended: false}))
+    (req, res, next) => {
 
+        // early catch 404 errors
+        PathChecker.check(req, res)
 
-// early catch 404 errors
-app.use(process.env.API_BASE_URL.concat('/*+'), (req, res, next)=>{
-    PathChecker.check(req, res, next)
-    next()
-})
+        // request logging
+        Logger.request(req)
+
+        next()
+    }
+);
 
 
 

@@ -2,7 +2,7 @@ const os = require("os");
 const fs = require("fs");
 const {dummyData} = require("./dummy");
 const tmpStorage = os.tmpdir()+process.env["STORAGE_FOLDER"]
-
+const logStorage = os.tmpdir()+process.env["LOG_FOLDER"]
 
 
 /**
@@ -12,6 +12,7 @@ function init() {
     if (!checkStorageFolderExists()) {
         createStorageFolder()
         populateStorage()
+        createLogFolder()
     }
     console.log("System ready")
 }
@@ -50,4 +51,15 @@ function createStorageFolder() {
 function populateStorage() {
     fs.mkdirSync(`${tmpStorage}/Personnel`)
     fs.writeFileSync(`${tmpStorage}/avis_imposition`, dummyData, {encoding: 'utf8'})
+}
+
+
+
+/**
+ * Create the log folder in the OS temporary folder.
+ * @return void
+ */
+function createLogFolder() {
+    console.log("Création du dossier de log")
+    fs.mkdirSync(logStorage)
 }
