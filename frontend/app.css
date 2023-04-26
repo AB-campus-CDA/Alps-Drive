@@ -1,7 +1,28 @@
 body {
     font-family: 'Roboto', monospace;
     margin: 0;
+    height: 100vh;
+    background-color: rgb(17, 33, 61);
+    color: azure;
+
+    background-image: url("assets/alps.png");
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-blend-mode: revert;
 }
+
+body::after {
+    content:"";
+    z-index: -100;
+    background: linear-gradient(to right, rgb(17, 33, 61) 20%, rgba(17, 33, 61, 0.5));
+    height: 400px;
+    width: 100vw;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+
 ul {
     list-style-type: none;
 }
@@ -9,13 +30,9 @@ a {
     color: inherit;
     text-decoration: inherit;
 }
-input[type="file"]{
-    position: absolute;
-    top: -500px;
-}
 
 .header {
-    background-color: aquamarine;
+    background-color: rgba(49, 101, 229, 0.51);
     box-shadow: 0px 5px 5px black;
     height: 80px;
     font-size: 2rem;
@@ -25,61 +42,149 @@ input[type="file"]{
     font-size: 1.2rem;
     padding: 20px;
 }
-.drive-item svg {
-    margin-right: 10px;
-}
-.drive-item span {
-    font-size: 0.8rem;
-}
-.drive-item div {
-    display: inline;
-}
-.drive-breadcrumb {
+
+.breadcrumb {
+    margin-top: 10px;
     margin-bottom: 10px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid white;
+    height: 2rem;
 }
-.drive-breadcrumb-text {
+
+.breadcrumb-action {
+    cursor: pointer;
+    background-color: azure;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 4px;
+
+    filter: revert;
+}
+
+.breadcrumb-action svg {
+    color: black;
+}
+
+.breadcrumb-text {
     margin-left: 10px;
     cursor: default;
 }
-.drive-item-folder {
-    cursor: pointer;
+
+
+/* --------------- ITEMS ------------------- */
+
+.item {
+    height: 2.2rem;
 }
-.drive-item-action {
+.item span {
+    font-size: 0.8rem;
+    margin-left: 4px;
+    margin-bottom: 2px;
+    margin-top: auto;
+}
+
+.item-folder {
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.item-file {
+    font-weight: 200;
+    cursor: pointer;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.icon-wrapper {
+    display: inline-flex;
+    width: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.item-action {
     font-size: 0.9rem;
     cursor: pointer;
     opacity: 0.2;
+    background-color: azure;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 999px;
 }
-.drive-item-action:hover {
+
+.item-action:hover {
     opacity: 1;
 }
 
-.drive-add-file {
-    margin-right: 30px;
-}
-.drive-add-file label {
-    text-decoration-line: underline;
-    cursor: cell;
+/* --------------- ADD FILE ------------------- */
+
+input[type="file"]{
+    /*position: absolute;
+    top: -500px;*/
+    width: 0;
+    height: 1.8rem;
 }
 
-.drive-add-folder {
+.add-file {
+    margin-bottom: 30px;
+}
+.add-file label {
+    cursor: cell;
+    padding: 4px 8px;
+    border: 1px solid azure;
+    margin-bottom: 8px;
+}
+
+.add-file label:hover {
+    background-color: steelblue;
+}
+
+/* --------------- ADD FOLDER ------------------- */
+
+.add-folder {
     margin-bottom: 10px;
 }
-.drive-add-folder span {
+
+.add-folder svg{
+    margin-right: 0.5rem;
+}
+.add-folder span {
     font-size: 1.8rem;
     margin-left: 5px;
     vertical-align: bottom;
 }
 
+
+
+/* --------------- VARIOUS ------------------- */
+
+
 .alert {
     color: darkred;
 }
 .msg-error {
-    display: block;
+    background-color: rgba(240, 255, 255, 0.7);
     color: darkred;
     font-size: 0.9rem;
+    padding: 2px 6px;
 }
+
 .flex-horizontal {
     display: flex;
     align-items: center;
 }
 
+.flex-horizontal-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-horizontal-start {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}

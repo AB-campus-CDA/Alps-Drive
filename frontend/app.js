@@ -1,7 +1,3 @@
-//const Vue = require('@coreui/vue')
-//const axios = require("axios")
-
-
 const API_URL = '/api/drive';
 const driveState = Vue.observable({ folderBreadcrumb: [''], items: [] });
 
@@ -19,10 +15,11 @@ function buildItemUrl(itemName = '') {
     return API_URL + buildBreadcrumb() + itemName;
 }
 
-Vue.component('drive-breadcrumb', {
-    template: '<div class="drive-breadcrumb flex-horizontal" title="Current folder">' +
-        '<div v-on:click="back" title="Back"><i class="far fa-caret-square-left drive-item-action"></i></div>' +
-        '<div class="drive-breadcrumb-text">{{folderBreadcrumb}}</div>' +
+
+Vue.component('breadcrumb', {
+    template: '<div class="breadcrumb flex-horizontal" title="Current folder">' +
+        '<div v-on:click="back" title="Back" class="breadcrumb-action flex-horizontal-center"><i class="far fa-caret-square-left"></i></div>' +
+        '<div class="breadcrumb-text">{{folderBreadcrumb}}</div>' +
         '</div>',
     computed: {
         folderBreadcrumb: () => buildBreadcrumb(driveState.folderBreadcrumb),
@@ -35,8 +32,8 @@ Vue.component('drive-breadcrumb', {
     },
 });
 
-Vue.component('drive-item-folder', {
-    template: '<div class="drive-item-folder" title="folder" v-on:click.prevent="open"><i class="far fa-folder"></i>{{item.name}}</div>',
+Vue.component('item-folder', {
+    template: '<div class="item-folder" title="folder" v-on:click.prevent="open"><div class="icon-wrapper"><i class="far fa-folder"></i></div> {{item.name}}</div>',
     props: ['item'],
     methods: {
         open() {
@@ -46,8 +43,8 @@ Vue.component('drive-item-folder', {
     },
 });
 
-Vue.component('drive-item-file', {
-    template: `<a class="drive-item-file" title="file" target="_blank" :href="href"><i class="far fa-file"></i>{{item.name}}<span> ({{item.size}} bytes)</span></a>`,
+Vue.component('item-file', {
+    template: `<a class="item-file" title="file" target="_blank" :href="href"><div class="icon-wrapper"><i class="far fa-file"></i></div>{{item.name}}<span> ({{item.size}} bytes)</span></a>`,
     props: ['item'],
     computed: {
         href() { return buildItemUrl(this.item.name) },
@@ -55,15 +52,16 @@ Vue.component('drive-item-file', {
 
 });
 
-Vue.component('drive-item', {
-    template: '<li class="drive-item flex-horizontal">' +
-        '<div class="drive-item-action alert" v-on:click="del" title="delete"><i class="far fa-trash-alt"></i></div>' +
-        '<drive-item-folder v-if="item.isFolder" v-bind:item="item"/>' +
-        '<drive-item-file v-if="!item.isFolder" v-bind:item="item"/>' +
-        '<div class="msg-error">{{message}}</div>' +
+Vue.component('item', {
+    template: '<li class="item flex-horizontal">' +
+        '<div class="item-action alert flex-horizontal-center" v-on:click="del" title="delete"><i class="far fa-trash-alt"></i></div>' +
+        '<item-folder v-if="item.isFolder" v-bind:item="item"/>' +
+        '<item-file v-if="!item.isFolder" v-bind:item="item"/>' +
+        '<div v-if="message !== empty" class="msg-error">{{message}}</div>' +
     '</li>',
     props: ['item'],
     data: () => ({
+        empty: '',
         message: '',
     }),
     methods: {
@@ -74,21 +72,21 @@ Vue.component('drive-item', {
                 })
                 .then(() => loadDriveItems())
                 .catch(error => {
-                    this.message = error.response.data;
+                    this.message = error.response.data.message;
                 });
         },
     },
 });
 
-Vue.component('drive-add-file', {
-    template: '<div class="drive-add-file">' +
-        '<label>' +
-            'Upload a new file' +
-            '<input type="file" id="file" ref="file" v-on:change="handleFileUpload"/></label>' +
-        '<div class="msg-error">{{message}}</div>' +
+Vue.component('add-file', {
+    template: '<div class="add-file">' +
+        '<label for="file">Upload a new file</label>' +
+        '<input type="file" id="file" ref="file" v-on:change="handleFileUpload"/>' +
+        '<div v-if="message !== empty" class="msg-error">{{message}}</div>' +
         '</div>',
     data: () => ({
-        message: '',
+        empty: '',
+        message: ''
     }),
     methods: {
         handleFileUpload() {
@@ -108,19 +106,19 @@ Vue.component('drive-add-file', {
                 })
                 .then(() => loadDriveItems())
                 .catch(error => {
-                    this.message = error.response.data;
+                    this.message = error.response.data.message;
                 });
         }
     },
 });
 
-Vue.component('drive-add-folder', {
-    template: '<form class="drive-add-folder" v-on:submit.prevent="submit">' +
+Vue.component('add-folder', {
+    template: '<form class="add-folder" v-on:submit.prevent="submit">' +
         '<input v-model.trim="name" placeholder="Create a new folder">' +
         '<span v-on:click="submit"><i class="fa fa-folder-plus"></i></span>' +
-        '<div class="msg-error">{{message}}</div>' +
-    '</form>',
+        '<div v-if="message !== empty" class="msg-error">{{message}}</div>' +    '</form>',
     data: () => ({
+        empty: '',
       name: '',
       message: '',
     }),
@@ -137,7 +135,7 @@ Vue.component('drive-add-folder', {
                 })
                 .then(() => loadDriveItems())
                 .catch(error => {
-                    this.message = error.response.data;
+                    this.message = error.response.data.message;
                 })
         },
     },
@@ -145,15 +143,16 @@ Vue.component('drive-add-folder', {
 
 Vue.component('drive', {
     template: '<div>' +
-        '<drive-add-file />' +
-        '<ul>' +
-            '<drive-breadcrumb />' +
-            '<drive-add-folder />' +
-            '<div class="msg-error">{{message}}</div>' +
-            '<drive-item v-for="item in items" :key="item.name" v-bind:item="item"></drive-item>' +
-        '</ul>' +
+        '<add-file />' +
+        '<div>' +
+            '<breadcrumb />' +
+            '<add-folder />' +
+        '<div v-if="message !== empty" class="msg-error">{{message}}</div>' +
+            '<item v-for="item in items" :key="item.name" v-bind:item="item"></item>' +
+        '</div>' +
         '</div>',
     data: () => ({
+        empty: '',
         message: '',
     }),
     computed: {
@@ -165,7 +164,7 @@ Vue.component('drive', {
                 this.message = '';
             })
             .catch(error => {
-                this.message = error.response.data;
+                this.message = error.response.data.message;
             });
     }
 });
@@ -174,3 +173,4 @@ new Vue({
     el: '#app',
     template: '<drive class="app"></drive>'
 });
+

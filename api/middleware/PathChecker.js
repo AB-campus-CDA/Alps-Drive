@@ -21,7 +21,7 @@ exports.check = (req, res) => {
         //console.log(storageFolder+path, 'is a folder')
     } catch (e) {
         console.error("FOLDER READ ERROR :", storageFolder+path)
-        errors.onFolderRead = e
+        //errors.onFolderRead = e
     }
 
     // test if is an existing file
@@ -30,13 +30,13 @@ exports.check = (req, res) => {
         //console.log(storageFolder+path, 'is a file')
     } catch (e) {
         console.error("FILE READ ERROR :", storageFolder+path)
-        errors.onFileRead = e
+        //errors.onFileRead = e
     }
 
 
     // FILE OVERRIDE CONFLICT
     if (req.method === 'PUT' && errors.onFileRead === null) {
-        console.error("FILE OVERRIDE")
+        //console.error("FILE OVERRIDE")
         res.status(400).json({
             message: "File already exists",
             target: storageFolder+path
@@ -46,7 +46,7 @@ exports.check = (req, res) => {
 
     // MISSING FOLDER/FILE
     if ((errors.onFileRead && errors.onFolderRead) && req.method !== 'POST') {
-        console.log("something fucked up")
+        //console.log("something fucked up")
         res.status(404).json({
             message: "Ressource introuvable",
             target: storageFolder.concat(path),
