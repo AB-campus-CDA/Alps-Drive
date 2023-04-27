@@ -14,14 +14,13 @@ exports.check = (req, res) => {
     let path = req.baseUrl.replace(process.env["API_BASE_URL"], '/')
     let errors = {onFileRead: null, onFolderRead: null}
 
-
     // test if is an existing folder
     try {
         readdirSync(storageFolder.concat(path).replace('//','/'), {encoding: 'utf8'})
         //console.log(storageFolder+path, 'is a folder')
     } catch (e) {
-        console.error("FOLDER READ ERROR :", storageFolder+path)
-        //errors.onFolderRead = e
+        //console.error("FOLDER READ ERROR :", storageFolder+path)
+        errors.onFolderRead = e
     }
 
     // test if is an existing file
@@ -29,18 +28,8 @@ exports.check = (req, res) => {
         readFileSync(storageFolder+path, {encoding: 'utf8'})
         //console.log(storageFolder+path, 'is a file')
     } catch (e) {
-        console.error("FILE READ ERROR :", storageFolder+path)
-        //errors.onFileRead = e
-    }
-
-
-    // FILE OVERRIDE CONFLICT
-    if (req.method === 'PUT' && errors.onFileRead === null) {
-        //console.error("FILE OVERRIDE")
-        res.status(400).json({
-            message: "File already exists",
-            target: storageFolder+path
-        })
+        //console.error("FILE READ ERROR :", storageFolder+path)
+        errors.onFileRead = e
     }
 
 
@@ -64,4 +53,19 @@ exports.check = (req, res) => {
         })
     }
 
+}
+
+
+/**
+ * Tests if file already exists in this path. Go next if not, set response code to 409 as an override conflict is detected.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.fileExistsTest = (req, res, next) => {
+
+    //console.log("req files :",req.files['name'][0])
+
+    next()
 }

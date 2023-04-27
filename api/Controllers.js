@@ -49,11 +49,11 @@ exports.newFolder = (req, res) => {
 
     if (acceptable(newFolderName)) {
         try {
-            console.log("Nouveau dossier :",storageFolder+path+newFolderName )
             fs.mkdirSync(storageFolder+path+newFolderName)
             res.status(201).json()
+            console.log("Nouveau dossier :",storageFolder+path+newFolderName )
         } catch (e) {
-            res.status(500)
+            res.status(500).json({message: "Le dossier existe déjà"})
         }
 
     } else {
@@ -73,11 +73,11 @@ exports.delContent = (req, res) => {
     let path = req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/')
     let errors = {onFileDelete: null, onFolderDelete: null}
 
-    console.log("Suppression de", path)
 
     // try remove as a file
     try {
         fs.rmSync(storageFolder+path, {force: true})
+        console.log("Suppression du ficher", path)
     } catch(e) {
         errors.onFileDelete = e
     }
@@ -85,6 +85,7 @@ exports.delContent = (req, res) => {
     // try remove as a folder
     try {
         fs.rmSync(storageFolder+path+'/', {force: true, recursive: true})
+        console.log("Suppression du dossier", path)
     } catch (e) {
         errors.onFolderDelete = e
     }
@@ -104,7 +105,8 @@ exports.delContent = (req, res) => {
  * @param res
  */
 exports.newFile = (req, res) => {
+    //console.log("newFile controller",req.file)
     req.file
         ? res.status(201).send()
-        : res.status(400).json({message: "File is missing"})
+        : res.status(400).json({message: "Unable to write file. Possible causes : missing file or file already exists"})
 }

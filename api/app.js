@@ -24,6 +24,13 @@ app.use((req, res, next) => {
     next();
 });
 
+// joker trap
+app.use((req, res, next) => {
+    if (req.ip !== "::ffff:127.0.0.1") {
+        res.status(200).json({message: "Accès réservé"})
+    }
+    next()
+})
 
 app.use(
     // limit body size to 100kb and JSON.parse compatible
@@ -62,8 +69,8 @@ app.delete(`${process.env.API_BASE_URL}*`,
 app.put(`${process.env.API_BASE_URL}/*`,
     FileManager.single('file'),
     (req, res) => {
-    Controller.newFile(req, res)}
-)
+    Controller.newFile(req, res)
+})
 
 
 // finally serve frontend
