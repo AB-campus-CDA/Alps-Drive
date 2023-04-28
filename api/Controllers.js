@@ -13,8 +13,8 @@ const storageFolder = os.tmpdir()+process.env.STORAGE_FOLDER
  */
 exports.getContent = (req, res) => {
 
-    let path = req.url.replace(process.env["API_BASE_URL"], '/').replace('//','/')
-    //console.log("req.url",path)
+    let path = req.path.replace(process.env["API_BASE_URL"], '/').replace('//','/')
+    console.log("req.url",path)
 
     if (path[path.length-1]==='/') {
 

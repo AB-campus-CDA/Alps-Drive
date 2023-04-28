@@ -33,6 +33,12 @@ a {
     color: inherit;
     text-decoration: inherit;
 }
+button {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+}
 
 .header {
     background-color: rgba(49, 101, 229, 0.51);
@@ -45,6 +51,7 @@ a {
     font-size: 1.2rem;
     padding: 20px;
 }
+
 
 .breadcrumb {
     margin-top: 10px;
@@ -77,28 +84,45 @@ a {
 /* --------------- ITEMS ------------------- */
 
 .item {
-    height: 2.2rem;
+    /*width: 40vw;*/
+    min-width: 10rem;
+    cursor: pointer;
+
+    display: flex;
 }
+.item:hover {
+    background-color: rgba(240,255,255,0.3);
+}
+
 .item span {
     font-size: 0.8rem;
     margin-left: 4px;
-    margin-bottom: 2px;
+    margin-bottom: 8px;
     margin-top: auto;
 }
 
 .item-folder {
+    height: 2.2rem;
     font-weight: 900;
-    cursor: pointer;
     display: flex;
     justify-content: start;
     align-items: center;
+    flex: 1;
 }
 .item-file {
+    height: 2.2rem;
     font-weight: 200;
-    cursor: pointer;
     display: flex;
     justify-content: start;
     align-items: center;
+    flex: 1;
+}
+
+.item-file input, .item-folder input {
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    border: none;
 }
 
 .icon-wrapper {
@@ -106,11 +130,11 @@ a {
     width: 2rem;
     justify-content: center;
     align-items: center;
+    margin-right: 4px;
 }
 
-.item-action {
+.item-action .icon-wrapper{
     font-size: 0.9rem;
-    cursor: pointer;
     opacity: 0.2;
     background-color: azure;
     height: 1.5rem;
@@ -118,9 +142,19 @@ a {
     border-radius: 999px;
 }
 
-.item-action:hover {
+.item-action .icon-wrapper:hover {
     opacity: 1;
 }
+
+/* --------------- command section ------------------- */
+div.commands {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: start;
+    margin-bottom: 30px;
+}
+
+
 
 /* --------------- ADD FILE ------------------- */
 
@@ -129,21 +163,29 @@ input[type="file"]{
     top: -500px;*/
     width: 0;
     height: 1.8rem;
+    margin-top: 8px;
 }
 
-.add-file {
-    margin-bottom: 30px;
-}
 .add-file label {
+    cursor: cell;
+    padding: 4px 8px;
+    border: 1px solid azure;
+}
+
+.add-file label:hover {
+    background-color: steelblue;
+}
+
+
+/* --------------- CHANGE ORDER ------------------- */
+.order-items {
     cursor: cell;
     padding: 4px 8px;
     border: 1px solid azure;
     margin-bottom: 8px;
 }
 
-.add-file label:hover {
-    background-color: steelblue;
-}
+
 
 /* --------------- ADD FOLDER ------------------- */
 
@@ -157,7 +199,7 @@ input[type="file"]{
 .add-folder span {
     font-size: 1.8rem;
     margin-left: 5px;
-    vertical-align: bottom;
+    /*vertical-align: bottom;*/
 }
 
 
@@ -166,7 +208,7 @@ input[type="file"]{
 
 
 .alert {
-    color: darkred;
+    color: #650b8c;
 }
 .msg-error {
     background-color: rgba(240, 255, 255, 0.7);
