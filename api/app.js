@@ -6,6 +6,7 @@ const {init} = require('./init')
 
 
 // middlewares :
+const OriginChecker = require('./middleware/OriginChecker')
 const PathChecker = require('./middleware/PathChecker')
 const FileManager = require('./middleware/FileManager');
 const Logger = require('./middleware/Logger')
@@ -15,22 +16,22 @@ const Logger = require('./middleware/Logger')
 const Controller = require('./Controllers')
 
 
+// joker trap
+app.use((req, res, next) => {
+    OriginChecker.filter(req, res)
+    next()
+})
+
 
 // headers setting
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')//, PATCH, OPTIONS');
+    res.setHeader('toto', 'un bon gars');
     next();
 });
 
-// joker trap
-app.use((req, res, next) => {
-    if (req.ip !== "::ffff:127.0.0.1") {
-        res.status(200).json({message: "Accès réservé"})
-    }
-    next()
-})
 
 app.use(
     // limit body size to 100kb and JSON.parse compatible
@@ -56,19 +57,23 @@ app.use(
 // routes :
 app.get(`${process.env.API_BASE_URL}*`,
     (req, res) => {
+        console.log('GET FROM', req.headers.origin)
     Controller.getContent(req, res)
 })
 app.post(`${process.env.API_BASE_URL}*`,
     (req, res) => {
+        console.log('POST FROM', req.headers.origin)
     Controller.newFolder(req, res)
 })
 app.delete(`${process.env.API_BASE_URL}*`,
     (req, res) => {
+        console.log('DELETE FROM', req.headers.origin)
     Controller.delContent(req, res)
 })
 app.put(`${process.env.API_BASE_URL}/*`,
     FileManager.single('file'),
     (req, res) => {
+        console.log('PUT FROM', req.headers.origin)
     Controller.newFile(req, res)
 })
 

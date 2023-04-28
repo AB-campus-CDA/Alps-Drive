@@ -53,7 +53,7 @@ exports.newFolder = (req, res) => {
             res.status(201).json()
             console.log("Nouveau dossier :",storageFolder+path+newFolderName )
         } catch (e) {
-            res.status(500).json({message: "Le dossier existe déjà"})
+            res.status(409).json({message: "Le dossier existe déjà"})
         }
 
     } else {

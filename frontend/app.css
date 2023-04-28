@@ -14,9 +14,12 @@ body {
 body::after {
     content:"";
     z-index: -100;
-    background: linear-gradient(to right, rgb(17, 33, 61) 20%, rgba(17, 33, 61, 0.5));
+    background: linear-gradient(to right,
+    rgb(17, 33, 61) 20%,
+    rgba(17, 33, 61, 0.5));
     height: 400px;
     width: 100vw;
+    max-width: 900px;
     position: fixed;
     bottom: 0;
     right: 0;
@@ -187,4 +190,11 @@ input[type="file"]{
     display: flex;
     justify-content: start;
     align-items: center;
+}
+
+.fluo {
+    background-color: #b3ff31 !important;
+    color: #650b8c !important;
+    font-weight: 900 !important;
+    font-size: 2rem !important;
 }

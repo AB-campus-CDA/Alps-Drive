@@ -12,7 +12,7 @@ exports.request = (req) => {
         time: req.times,
         method: req.method,
         path: req.url,
-        IP_user: req.ip
+        IP_user: req.headers['incomingip']
     }
 
     const d = new Date()
