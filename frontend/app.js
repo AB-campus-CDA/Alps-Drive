@@ -2,15 +2,19 @@ const API_URL = '/api/drive';
 const driveState = Vue.observable(
     { folderBreadcrumb: [''], items: [], errorMessage:{addFile:'', addFolder:'', item:'', get:''} });
 
-function loadDriveItems() {
+function loadDriveItems(type) {
     driveState.errorMessage = clearErrors()
     return axios
         .get(buildItemUrl())
         .then(response => {
             driveState.items = response.data
-            driveState.errorMessage.get = response.data.message
-            console.log(response.data)
-            return response
+        })
+        .catch(err => {
+            if (type === 'folder') {
+                console.log("remove last breadcrumb element")
+                driveState.folderBreadcrumb.splice(driveState.folderBreadcrumb.length - 1, 1);
+            }
+            driveState.errorMessage.get = err.message
         })
 }
 
@@ -23,7 +27,6 @@ function buildBreadcrumb() {
 }
 
 function clearErrors() {
-    console.log("clearing error messages")
     return {addFile:'', addFolder:'', item:'', get:''}
 }
 
@@ -54,8 +57,7 @@ Vue.component('item-folder', {
     methods: {
         open() {
             driveState.folderBreadcrumb.push(this.item.name);
-            //driveState.errorMessage = clearErrors()
-            loadDriveItems();
+            loadDriveItems('folder')
         },
     },
 });
@@ -197,22 +199,33 @@ Vue.component('add-folder', {
 });
 
 Vue.component('drive', {
-    template: '<div>' +
+    template: '<div v-if="renderComp">' +
         '<add-file v-bind:errorMessage="errorMessage.addFile"/>' +
         '<div>' +
             '<breadcrumb />' +
             '<add-folder v-bind:errorMessage="errorMessage.addFolder"/>' +
-            /*'<div v-if="message !== empty" class="msg-error">{{message}}</div>' +*/
+            '<div v-if="errorMessage.get" class="msg-error fluo">{{errorMessage.get}}</div>' +
             '<item v-for="item in items" :key="item.name" v-bind:item="item" v-bind:error-message=null ></item>' +
         '</div>' +
         '</div>',
-/*    data: () => ({
-        empty: '',
-        message: ''
-    }),*/
+    data: () => ({
+        renderComp: true
+    }),
     computed: {
         items: () => driveState.items,
         errorMessage: () => driveState.errorMessage
+    },
+    methods: {
+        async forceRender() {
+            // Remove MyComponent from the DOM
+            this.renderComp = false;
+
+            // Then, wait for the change to get flushed to the DOM
+            await this.$nextTick();
+
+            // Add MyComponent back in
+            this.renderComp = true;
+        }
     },
 
     mounted () {

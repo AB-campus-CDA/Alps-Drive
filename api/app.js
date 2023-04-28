@@ -54,12 +54,16 @@ app.use(
 
 
 
+app.get(`${process.env.API_BASE_URL}/interdit`,
+    (req, res) => {
+        res.status(400).json({message: "c'est interdit"})
+    })
 // routes :
 app.get(`${process.env.API_BASE_URL}*`,
     (req, res) => {
         console.log('GET FROM', req.headers.origin)
-    Controller.getContent(req, res)
-})
+        Controller.getContent(req, res)
+    })
 app.post(`${process.env.API_BASE_URL}*`,
     (req, res) => {
         console.log('POST FROM', req.headers.origin)
